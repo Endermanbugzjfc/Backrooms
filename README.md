@@ -2,7 +2,16 @@
 OF THE HORROR, FOR YOUR FEAR.
 
 This plugin implements world generator for famous horror scenes.
-Harness them to create surival-, apocalypse- or games you desire!
+Harness them to create surival-, apocalypse-, and genes of game you desire!
 
-- [X] Backrooms
-- [ ] SCP-3008
+# Scenes
+## Backrooms
+### "The Lobby"
+#### WIP
+- Small pocket-rooms.
+- Bloody arrows.
+- Gameplay: monsters.
+- Gameplay: entrance.
+## SCP
+### 3008
+#### WIP

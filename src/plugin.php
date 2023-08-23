@@ -10,8 +10,6 @@ use pocketmine\world\generator\InvalidGeneratorOptionsException;
 
 final class Main extends PluginBase
 {
-    protected function onEnable(): void {}
-
     protected function onLoad(): void
     {
         GeneratorManager::getInstance()->addGenerator(
@@ -23,4 +21,11 @@ final class Main extends PluginBase
             }
         );
     }
+
+    protected function onEnable(): void {
+        foreach ([
+            new BackroomsListener,
+        ] as $listener) $this->getServer()->getPluginManager()->registerEvents($listener, $this);
+    }
+
 }

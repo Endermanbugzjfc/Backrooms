@@ -15,6 +15,12 @@ use pocketmine\world\generator\populator\Populator;
 
 class Backrooms extends Generator {
 
+    /**
+     * This option exists because the ceil is made out of looms.
+     * Override me.
+     */
+    public const GAMEPLAY_NO_CEIL_INTERACTION = true;
+
     public function __construct(int $seed, string $preset){
         parent::__construct($seed, $preset);
         $this->populators = [
@@ -24,7 +30,7 @@ class Backrooms extends Generator {
     }
 
     public static function calculateCeilY(int $seed) : int {
-        return $seed & 8;
+        return $seed & 0b111;
     }
 
     public static function calculateFloorAxis(int $seed) : int {
@@ -83,11 +89,9 @@ class Backrooms extends Generator {
 }
 
 class Pillar implements Populator {
-    /**
-     * @param int $densityRate non-zero unsigned.
-     */
     public function __construct(
-        public readonly int $densityRate = 1 << 16,
+        public readonly int $maxWallLength = 1 << 6,
+        public readonly int $maxWallCorners = 2,
     ) {
 
     }
@@ -98,6 +102,7 @@ class Pillar implements Populator {
         [$X, $Z] = $XZ;
         $air = VanillaBlocks::AIR()->getStateId();
         $wall = VanillaBlocks::END_STONE()->getStateId();
+        $foot = VanillaBlocks::SMOOTH_SANDSTONE()->getStateId();
 
         $chunk = $world->getChunk($chunkX, $chunkZ);
         $thisRolled = $lastRolled = null;
@@ -110,15 +115,15 @@ class Pillar implements Populator {
             ) ?? $chunk;
         };
 
-        $lenWall = $random->nextBoundedInt(63) + 1;
+        $lenWall = $random->nextBoundedInt($this->maxWallLength - 1) + 1;
         for ($cWall = 0; $cWall < $lenWall; $cWall++) {
             $sub = null;
             for ($Y = 1; ($sub?->getBlockStateId($X, $Y & SubChunk::COORD_MASK, $Z) ?? $air) === $air; $Y++) {
                 $sub = $chunk->getSubChunk($Y >> SubChunk::COORD_BIT_SIZE);
-                $sub->setBlockStateId($X, $Y & SubChunk::COORD_MASK, $Z, $wall);
+                $sub->setBlockStateId($X, $Y & SubChunk::COORD_MASK, $Z, $Y !== 1 ? $wall : $foot);
             }
 
-            if ($corners < 2 ? $rollMoveAxis($thisRolled) : $lastRolled) $move($X);
+            if ($corners < $this->maxWallCorners ? $rollMoveAxis($thisRolled) : $lastRolled) $move($X);
             else $move($Z);
 
             if ($lastRolled !== $thisRolled) $corners++;
