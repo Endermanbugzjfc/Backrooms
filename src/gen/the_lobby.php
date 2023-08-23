@@ -26,7 +26,8 @@ class Backrooms extends Generator {
      * in order to place {@link \pocketmine\block\tile\Sign} (wall signs).
      * Override me.
      */
-    public const GAMEPLAY_BLOODY_ARROW_WALL_SIGNS = true;
+    public const GAMEPLAY_BLOODY_ARROW_WALL_SIGNS = false;
+    // public const GAMEPLAY_BLOODY_ARROW_WALL_SIGNS = true;
     /**
      * Override me.
      */
@@ -106,7 +107,7 @@ class Pillar implements Populator {
     public function __construct(
         public readonly int $maxWallLength = 1 << 6,
         public readonly int $maxWallCorners = 2,
-        public readonly bool $bloodyArrowWallSigns = true,
+        public readonly bool $bloodyArrowWallSigns = Backrooms::GAMEPLAY_BLOODY_ARROW_WALL_SIGNS,
     ) {
 
     }

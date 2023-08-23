@@ -7,6 +7,7 @@ use pocketmine\block\utils\DyeColor;
 use pocketmine\block\utils\SignText;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\world\ChunkLoadEvent;
+use pocketmine\event\world\ChunkPopulateEvent;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
@@ -44,7 +45,7 @@ final class BackroomsListener extends SceneListener {
         if ($player->hasFiniteResources()) $player->getInventory()->setItemInHand($item);
     }
 
-    public function onChunkLoad(ChunkLoadEvent $event) : void {
+    public function onChunkPopulate(ChunkPopulateEvent $event) : void {
         $gen = $this->gen($event, fn($gen) => $gen::GAMEPLAY_BLOODY_ARROW_WALL_SIGNS);
         if ($gen === null) return;
 
@@ -73,14 +74,18 @@ final class BackroomsListener extends SceneListener {
                         Facing::WEST,
                         Facing::EAST,
                     ] as $side) {
-                        var_dump($pos->getSide($side));
                         if ($world->getBlock($pos->getSide($side))->asItem()->equals(VanillaItems::AIR())) continue;
                         $world->setBlock(
                             $pos,
                             VanillaBlocks::BIRCH_WALL_SIGN()
-                            ->setFacing($side)
-                            ->setText(new SignText(["HE"], DyeColor::RED()->getRgbValue(), true)),
+                            ->setFacing(Facing::opposite($side))
+                            ->setText(new SignText([
+                                "=====>",
+                                "=====>",
+                                "=====>",
+                            ], DyeColor::RED()->getRgbValue(), true)),
                         );
+                        return;
                     }
                 }
             }
