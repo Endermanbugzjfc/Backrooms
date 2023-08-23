@@ -4,5 +4,8 @@
     },
     "require-dev": {
         "sof3/pharynx": "^0.3.6"
+    },
+    "autoload": {
+        "Endermanbugzjfc\\Backrooms": "src"
     }
 }

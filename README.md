@@ -2,7 +2,7 @@
 OF THE HORROR, FOR YOUR FEAR.
 
 This plugin implements world generator for famous horror scenes.
-Harness them to create surival-, apocalypse-, and genes of game you desire!
+Harness them to create surival-, apocalypse-, and genres of game you desire!
 
 # Scenes
 ## Backrooms
