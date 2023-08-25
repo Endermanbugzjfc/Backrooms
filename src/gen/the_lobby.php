@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Endermanbugzjfc\Backrooms;
+namespace Endermanbugzjfc\Backrooms\TheLobby;
 
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;

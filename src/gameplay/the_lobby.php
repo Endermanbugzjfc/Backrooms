@@ -96,6 +96,7 @@ final class TheLobbyListener extends SceneListener {
                                 "=====>",
                                 "=====>",
                             ], DyeColor::RED()->getRgbValue(), true)),
+                            update: false,
                         );
                         return;
                     }
@@ -127,7 +128,7 @@ final class TheLobbyListener extends SceneListener {
                 $hackPlaceholder = $gen::POPULATOR_CORPSE::getRotationHackPlaceholder();
                 if ($this::checkPlaceholder($hack, $hackPlaceholder)) {
                     $rotation += 4;
-                    $world->setBlock($hack->getPosition(), VanillaBlocks::AIR());
+                    $world->setBlock($hack->getPosition(), VanillaBlocks::AIR(), update: false);
                 }
 
                 $at

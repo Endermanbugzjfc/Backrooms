@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Endermanbugzjfc\Backrooms;
 
+use Endermanbugzjfc\Backrooms\TheLobby\TheLobby;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerEvent;
 use pocketmine\event\world\WorldEvent;
