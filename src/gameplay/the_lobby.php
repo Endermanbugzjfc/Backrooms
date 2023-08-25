@@ -2,23 +2,24 @@
 
 namespace Endermanbugzjfc\Backrooms;
 
+use pocketmine\block\Block;
+use pocketmine\block\MobHead;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\block\utils\DyeColor;
 use pocketmine\block\utils\SignText;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\world\ChunkLoadEvent;
+use pocketmine\event\world\ChunkEvent;
 use pocketmine\event\world\ChunkPopulateEvent;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
-use pocketmine\scheduler\ClosureTask;
 use pocketmine\world\format\SubChunk;
 
 /**
- * @extends SceneListener<Backrooms>
+ * @extends SceneListener<TheLobby>
  */
-#[TargetGen(Backrooms::class)]
-final class BackroomsListener extends SceneListener {
+#[TargetGen(TheLobby::class)]
+final class TheLobbyListener extends SceneListener {
 
     public function onPlayerInteract(PlayerInteractEvent $event) : void {
         $gen = $this->gen($event, fn($gen) => $gen::GAMEPLAY_NO_CEIL_INTERACTION);
@@ -30,7 +31,7 @@ final class BackroomsListener extends SceneListener {
             case !$player->isSneaking():
             case $event->getAction() === $event::RIGHT_CLICK_BLOCK:
             case $gen::calculateCeilY($data->getSeed()) === $event->getBlock()->getPosition()->getFloorY():
-                return;
+            return;
         }
 
         $event->cancel();
@@ -46,9 +47,24 @@ final class BackroomsListener extends SceneListener {
     }
 
     public function onChunkPopulate(ChunkPopulateEvent $event) : void {
-        $gen = $this->gen($event, fn($gen) => $gen::GAMEPLAY_BLOODY_ARROW_WALL_SIGNS);
+        $flags = null;
+        $gen = $this->gen($event, function ($gen) use (&$flags) {
+            return in_array(true, $flags = [
+                $gen::GAMEPLAY_SPAWN_SKULLS,
+                $gen::GAMEPLAY_BLOODY_ARROW_WALL_SIGNS,
+            ]);
+        }, true);
         if ($gen === null) return;
 
+        // Note: the order matters.
+        if ($flags[0]) $this->skulls($event, $gen);
+        if ($flags[1]) $this->signs($event, $gen);
+    }
+
+    /**
+     * @phpstan-param class-string<TheLobby> $gen
+     */
+    private function signs(ChunkEvent $event, string $gen) : void {
         $world = $event->getWorld();
         $from = $gen::POPULATOR_PILLAR::BLOODY_ARROW_WALL_SIGNS_MIN_Y;
         $to = $gen::POPULATOR_PILLAR::BLOODY_ARROW_WALL_SIGNS_MAX_Y;
@@ -61,11 +77,7 @@ final class BackroomsListener extends SceneListener {
                         $Y,
                         $worldZ = ($event->getChunkZ() << SubChunk::COORD_BIT_SIZE) + $Z,
                     );
-                    $ids = array_map(
-                        fn($block) => $block->getIdInfo()->getBlockTypeId(),
-                        [$at, $placeholder],
-                    );
-                    if (array_unique($ids) === $ids) continue;
+                    if (!$this::checkPlaceholder($at, $placeholder)) continue;
 
                     $pos = new Vector3($worldX, $Y, $worldZ);
                     foreach ([
@@ -91,4 +103,49 @@ final class BackroomsListener extends SceneListener {
             }
         }
     }
+
+    /**
+     * @phpstan-param class-string<TheLobby> $gen
+     */
+    private function skulls(ChunkEvent $event, string $gen) : void {
+        $world = $event->getWorld();
+        for ($X = 0; $X < SubChunk::EDGE_LENGTH; $X++) {
+            for ($Z = 0; $Z < SubChunk::EDGE_LENGTH; $Z++) {
+                $at = $world->getBlockAt(
+                    $worldX = ($event->getChunkX() << SubChunk::COORD_BIT_SIZE) + $X,
+                    $worldY = $gen::POPULATOR_CORPSE::PROCESS_Y,
+                    $worldZ = ($event->getChunkZ() << SubChunk::COORD_BIT_SIZE) + $Z,
+                );
+                if (!$at instanceof MobHead) continue;
+
+                $rotation = 6 + $at->getFacing();
+                $hack = $world->getBlockAt(
+                    $worldX,
+                    $worldY += $gen::POPULATOR_CORPSE::ROTATION_HACK_OFFSET_Y,
+                    $worldZ,
+                );
+                $hackPlaceholder = $gen::POPULATOR_CORPSE::getRotationHackPlaceholder();
+                if ($this::checkPlaceholder($hack, $hackPlaceholder)) {
+                    $rotation += 4;
+                    $world->setBlock($hack->getPosition(), VanillaBlocks::AIR());
+                }
+
+                $at
+                ->setRotation($rotation)
+                ->setFacing(Facing::UP)
+                ->writeStateToWorld();
+            }
+        }
+    }
+
+    private static function checkPlaceholder(Block $block, Block $placeholder) : bool {
+        $ids = array_map(
+            fn($block) => $block->getIdInfo()->getBlockTypeId(),
+            [$block, $placeholder],
+        );
+
+        return array_unique($ids) !== $ids;
+
+    }
+
 }

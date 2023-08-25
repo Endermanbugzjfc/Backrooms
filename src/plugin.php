@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Endermanbugzjfc\Backrooms;
 
-use Endermanbugzjfc\Backrooms\BackroomsListener;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerEvent;
 use pocketmine\event\world\WorldEvent;
@@ -18,7 +17,7 @@ final class Main extends PluginBase
     protected function onLoad(): void
     {
         GeneratorManager::getInstance()->addGenerator(
-            Backrooms::class,
+            TheLobby::class,
             "backrooms",
             function (string $preset): ?InvalidGeneratorOptionsException {
                 if ($preset === "") return null;
@@ -29,14 +28,14 @@ final class Main extends PluginBase
 
     protected function onEnable(): void {
         foreach ([
-            BackroomsListener::class,
+            TheLobbyListener::class,
         ] as $listener) $this->getServer()->getPluginManager()->registerEvents(new $listener($this->getScheduler()), $this);
     }
 
 }
 
 /**
- * @template-covariant G
+ * @template-covariant G \pocketmine\world\generator\Generator
  */
 abstract class SceneListener implements Listener {
     public function __construct(
