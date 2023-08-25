@@ -8,20 +8,20 @@
 - Multiple scenes CANNOT have the same namespace.
 - The namespace MUST start with `Endermanbugzjfc\Backrooms\`.
 - The namespace SHOULD end with the scene name in PascalCase.
-- Other related classes, interfaces, traits, enums SHOULD lay in the same file of the world generators and populators.
+- Other related classes, interfaces, traits, enums (such as generator options) SHOULD lay in the same file of the world generators and populators.
 - One file that uses the namespace MUST lay in `gen`.
-- More than one files that use the namespace MUST lay in a subdirectory in `gen`.
-- The subdirectory SHOULD be named after the scene name. [(Remind: use snake_case)](#general)
-- THe subdirectory SHOULD NOT contain any other subdirectory.
+- More than one file that uses the namespace MUST lay in a subdirectory in `gen`.
+- The subdirectory SHOULD be named after the scene name. [(Remark: use snake_case)](#general)
+- The subdirectory SHOULD NOT contain any other subdirectory.
 - All namespaces in `gen` MUST be independent.
-- All files in `gen` MUST only import items of the PocketMine-MP API AND items of other Composer libraries.
+- All files in `gen` MUST only import PocketMine-MP API items and other Composer libraries' items.
 
 ## Directory `gameplay`
 - All files in `gameplay` MUST have the EXACT namespace `Endermanbugzjfc\Backrooms`.
 
-# Scene customisability
-- World generators MAY have constants and static methods as an customisation interface.
-- "Gameplay flag" constants have direct control to parts of code in which its TargetGen attribute points to the world generator that belongs the constant.
+# Scene customizability
+- World generators MAY have constants AND static methods as a customisation interface.
+- "Gameplay flag" constants have direct control over parts of code whose TargetGen attribute points to the world generator that belongs to the constant. ***[\[Example\]](https://github.com/Endermanbugzjfc/Backrooms/blob/29bb9c1fcf7dcede90000c49dbd7621163da1f9f/src/gameplay/the_lobby.php#L21-L26)***
 - The name of "gameplay flag" constants MUST start with `GAMEPLAY_`.
 - The static methods MUST have their signatures well documented.
 - World generators MUST include the class-string of its populators as "populator" constants.
