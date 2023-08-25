@@ -21,9 +21,9 @@
 
 # Scene customizability
 - World generators MAY have constants AND static methods as a customisation interface.
-- "Gameplay flag" constants have direct control over parts of code whose TargetGen attribute points to the world generator that belongs to the constant. ***[\[Example\]](https://github.com/Endermanbugzjfc/Backrooms/blob/29bb9c1fcf7dcede90000c49dbd7621163da1f9f/src/gameplay/the_lobby.php#L21-L26)***
+- "Gameplay flag" constants have direct control over parts of code whose TargetGen attribute points to the world generator class associated with the constant. ***[\[Example\]](https://github.com/Endermanbugzjfc/Backrooms/blob/29bb9c1fcf7dcede90000c49dbd7621163da1f9f/src/gameplay/the_lobby.php#L21-L26)***
 - The name of "gameplay flag" constants MUST start with `GAMEPLAY_`.
 - The static methods MUST have their signatures well documented.
-- World generators MUST include the class-string of its populators as "populator" constants.
+- World generators MUST include the class string of its populators as "populator" constants.
 - The name of "populator" constants MUST start with `POPULATOR_`.
 - The name of "populator" constants SHOULD end with the populator class name in SCREAMING_SNAKE_CASE.
