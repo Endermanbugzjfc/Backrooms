@@ -129,8 +129,8 @@ class Pillar implements Populator {
     public const BLOODY_ARROW_WALL_SIGNS_MAX_Y = 2;
 
     public function __construct(
-        public readonly int $maxWallLength = 1 << 6,
-        public readonly int $maxWallCorners = 2,
+        public readonly int $maxWallLength = 1 << 7,
+        public readonly int $maxWallCorners = 3,
         public readonly bool $bloodyArrowWallSigns = TheLobby::GAMEPLAY_BLOODY_ARROW_WALL_SIGNS,
     ) {
 
@@ -236,7 +236,7 @@ class Corpse implements Populator {
     }
 
     public function populate(ChunkManager $world, int $chunkX, int $chunkZ, Random $random) : void {
-        if ($random->nextBoundedInt(64) !== 1) return;
+        if ($random->nextBoundedInt(32) !== 1) return;
 
         $blood = VanillaBlocks::REDSTONE_WIRE();
         $skull = null;

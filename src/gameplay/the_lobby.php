@@ -2,6 +2,7 @@
 
 namespace Endermanbugzjfc\Backrooms;
 
+use Endermanbugzjfc\Backrooms\TheLobby\TheLobby;
 use pocketmine\block\Block;
 use pocketmine\block\MobHead;
 use pocketmine\block\VanillaBlocks;
