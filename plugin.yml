@@ -1,5 +1,6 @@
 name: Backrooms
 description: Of the horror, for your fear.
 api: 5.0.0
-version: 0.1.0
+#version: automatically generated.
 main: Endermanbugzjfc\Backrooms\Main
+website: https://github.com/Endermanbugzjfc/Backrooms
