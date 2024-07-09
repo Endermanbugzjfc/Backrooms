@@ -1,0 +1,51 @@
+name: PHP Composer
+
+on:
+  release:
+    type:
+    - created
+    - edited
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+
+    - name: Embed version number
+      run: |
+        printf "\n%s\n" '${{ gtihub.event.tag_name || github.event.workflow_run.id }}' | cat plugin.yml > plugin.yml
+
+    - name: Make PHAR
+      run: |
+        ./vendor/bin/pharynx -i . -O Backrooms.phar
+
+    - uses: AButler/upload-release-assets@v3.0
+      with:
+        files: ./Backrooms.phar
+        
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    # - name: Run test suite
+    #   run: composer run-script test
