@@ -34,7 +34,7 @@ jobs:
 
     - name: Embed version number
       run: |
-        printf "\n%s\n" '${{ gtihub.event.tag_name || github.event.workflow_run.id }}' | cat plugin.yml > plugin.yml
+        printf "\n%s\n" '${{ github.event.tag_name || github.event.workflow_run.id }}' | cat plugin.yml > plugin.yml
 
     - name: Make PHAR
       run: |
